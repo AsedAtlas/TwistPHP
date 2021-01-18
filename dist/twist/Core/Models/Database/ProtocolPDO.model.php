@@ -35,7 +35,7 @@
 		var $blActiveTransaction = false;
 		var $blAutoCommit = false;
 
-		function connect($strServer,$strUsername,$strPassword,$strDatabase,$intPort = 3306){//done
+		function connect($strServer,$strUsername,$strPassword,$strDatabase,$intPort = 3306){
 			try{
 				$this->resLink = new \PDO(sprintf('mysql:dbname=%s;host=%s;port=%s',$strDatabase,$strServer,$intPort), $strUsername, $strPassword);
 				$this->resLink->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -48,7 +48,7 @@
 			return (!is_null($this->resLink) && $this->ping());
 		}
 
-		function connectionError(){//done
+		function connectionError(){
 			return $this->strConnectionError;
 		}
 
@@ -75,27 +75,27 @@
 			}
 		}
 
-		function setCharset($strCharset){//done
+		function setCharset($strCharset){
 			return $this->resLink->exec(sprintf('SET NAMES %s',$strCharset));
 		}
 
-		function escapeString($strRawString){//done
+		function escapeString($strRawString){
 			return $this->resLink->quote($strRawString);
 		}
 
-		function numberRows($resResult){//done
+		function numberRows($resResult){
 			return $resResult->rowCount();
 		}
 
-		function insertId($strName = null){//done
+		function insertId($strName = null){
 			return $this->resLink->lastInsertId($strName);
 		}
 
-		function affectedRows($resResult){//done
+		function affectedRows($resResult){
 			return $resResult->rowCount();
 		}
 
-		function query($strQuery){//done
+		function query($strQuery){
 			$resResult = null;
 			try{
 				$resResult = $this->resLink->query($strQuery);
@@ -105,20 +105,20 @@
 			return $resResult;
 		}
 
-		function fetchArray($resResult){//done
+		function fetchArray($resResult){
 			return $resResult->fetch(\PDO::FETCH_ASSOC);
 		}
 
-		function freeResult($resResult){//done
+		function freeResult($resResult){
 			return $resResult->closeCursor();
 		}
 
-		function errorString(){//done
+		function errorString(){
 			$arrErrorInfo = $this->resLink->errorInfo();
 			return $arrErrorInfo[2];
 		}
 
-		function errorNumber(){//done
+		function errorNumber(){
 			return $this->resLink->errorCode();
 		}
 
