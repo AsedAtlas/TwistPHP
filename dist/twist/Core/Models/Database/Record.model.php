@@ -29,6 +29,7 @@
 	 */
 	class Record{
 
+		protected $strDatabaseKey = null;
 		protected $strDatabase = null;
 		protected $strTable = null;
 		protected $arrOriginalRecord = array();
@@ -43,7 +44,8 @@
 		 * @param array $arrRecord
 		 * @param bool $blClone
 		 */
-		public function __construct($strDatabase,$strTable,$arrStructure,$arrRecord,$blClone = false){
+		public function __construct($strDatabase,$strTable,$arrStructure,$arrRecord,$strDatabaseKey,$blClone = false){
+			$this->strDatabaseKey = $strDatabaseKey;
 			$this->strDatabase = $strDatabase;
 			$this->strTable = $strTable;
 			$this->arrStructure = $arrStructure;
@@ -56,6 +58,7 @@
 		 * Destruct the class so it cannot be used anymore
 		 */
 		public function __destruct(){
+			$this->strDatabaseKey = null;
 			$this->strDatabase = null;
 			$this->strTable = null;
 			$this->arrRecord = null;
@@ -150,7 +153,7 @@
 				$this->whereClause()
 			);
 
-			if(\Twist::Database()->query($strSQL)->status()){
+			if(\Twist::Database($this->strDatabaseKey)->query($strSQL)->status()){
 				$this->__destruct();
 				$blOut = true;
 			}
@@ -196,7 +199,7 @@
 			if(json_encode($this->arrOriginalRecord) !== json_encode($this->arrRecord)){
 
 				$strSQL = $this->sql($blInsert);
-				$resResult = \Twist::Database()->query($strSQL);
+				$resResult = \Twist::Database($this->strDatabaseKey)->query($strSQL);
 
 				if($resResult->status()){
 					//Now that the record has been updated in the database the original data must equal the current data
@@ -278,7 +281,7 @@
 						}
 					}
 
-					$arrValueClause[] = sprintf($strFieldString, \Twist::Database()->escapeString($strField), \Twist::Database()->escapeString($strValue));
+					$arrValueClause[] = sprintf($strFieldString, \Twist::Database($this->strDatabaseKey)->escapeString($strField), \Twist::Database($this->strDatabaseKey)->escapeString($strValue));
 				}
 			}
 
@@ -297,7 +300,7 @@
 			$strAutoIncrementField = $this->detectAutoIncrement();
 
 			if(!is_null($strAutoIncrementField)){
-				$arrWhereClause[] = sprintf("`%s` = %d", \Twist::Database()->escapeString($strAutoIncrementField), \Twist::Database()->escapeString($this->arrOriginalRecord[$strAutoIncrementField]));
+				$arrWhereClause[] = sprintf("`%s` = %d", \Twist::Database($this->strDatabaseKey)->escapeString($strAutoIncrementField), \Twist::Database($this->strDatabaseKey)->escapeString($this->arrOriginalRecord[$strAutoIncrementField]));
 			}else{
 				foreach($this->arrOriginalRecord as $strField => $strValue){
 
@@ -312,7 +315,7 @@
 						}
 					}
 
-					$arrWhereClause[] = sprintf($strFieldString, \Twist::Database()->escapeString($strField), \Twist::Database()->escapeString($strValue));
+					$arrWhereClause[] = sprintf($strFieldString, \Twist::Database($this->strDatabaseKey)->escapeString($strField), \Twist::Database($this->strDatabaseKey)->escapeString($strValue));
 				}
 			}
 
