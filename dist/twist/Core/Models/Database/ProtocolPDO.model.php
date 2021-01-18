@@ -80,7 +80,9 @@
 		}
 
 		function escapeString($strRawString){
-			return $this->resLink->quote($strRawString);
+			//@todo Does not work in the same way tht MySQL does, need to use prepare/execute
+			//return $this->resLink->quote($strRawString);
+			return $strRawString;
 		}
 
 		function numberRows($resResult){
